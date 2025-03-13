@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { BtnSave, v } from "../../index"
+import { BtnSave } from "../../index"
 
 export function LoginTemplate() {
   return (
