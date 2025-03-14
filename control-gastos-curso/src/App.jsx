@@ -1,9 +1,14 @@
-import React, { createContext, useState } from 'react';
-import { MyRoutes } from './index';
-import { Light, Dark } from './index';
-import { ThemeProvider } from 'styled-components';
+import { BrowserRouter } from "react-router-dom";
+import { MyRoutes } from "./index";
+import { createContext, useState } from "react";
+import { Light, Dark, AuthContextProvider } from "./index";
+import { ThemeProvider } from "styled-components";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"; // ✅ Importar QueryClientProvider
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
-// Creación del contexto (asegúrate de usar createContext, no Createcontext)
+// 🔹 Crear una instancia de QueryClient
+const queryClient = new QueryClient();
+
 export const ThemeContext = createContext(null);
 
 function App() {
@@ -11,14 +16,22 @@ function App() {
   const themeStyle = theme === "light" ? Light : Dark;
 
   return (
-    // Utiliza .Provider para pasar el valor del contexto
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <ThemeContext.Provider value={{ setTheme, theme }}>
       <ThemeProvider theme={themeStyle}>
-        <MyRoutes />
+        <AuthContextProvider>
+          {/* ✅ Agregar QueryClientProvider aquí */}
+          <QueryClientProvider client={queryClient}>
+            <BrowserRouter>
+              <MyRoutes />
+            </BrowserRouter>
+            {import.meta.env.MODE === "development" && <ReactQueryDevtools initialIsOpen={false} />}
+          </QueryClientProvider>
+        </AuthContextProvider>
       </ThemeProvider>
     </ThemeContext.Provider>
   );
 }
 
 export default App;
+
 
